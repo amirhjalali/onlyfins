@@ -6,7 +6,6 @@
 <title>OnlyFins — Puff Daddy Live</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #f3f3f3; color: #333; }
@@ -47,24 +46,9 @@
   .stat-label { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
 
   /* Stream */
-  .stream-card { background: #000; border-radius: 12px; overflow: hidden; margin: 16px 0; position: relative; }
-  .stream-wrapper { width: 100%; aspect-ratio: 16/9; position: relative; cursor: pointer; }
-  .stream-wrapper video { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .stream-controls {
-    position: absolute; bottom: 0; left: 0; right: 0;
-    background: linear-gradient(transparent, rgba(0,0,0,0.7));
-    padding: 16px 12px 10px; display: flex; align-items: center; gap: 12px;
-    opacity: 0; transition: opacity 0.3s;
-  }
-  .stream-card:hover .stream-controls { opacity: 1; }
-  .stream-controls button {
-    background: none; border: none; color: #fff; cursor: pointer;
-    font-size: 18px; padding: 4px 8px; border-radius: 4px;
-  }
-  .stream-controls button:hover { background: rgba(255,255,255,0.15); }
-  .stream-status { color: #fff; font-size: 12px; margin-left: auto; display: flex; align-items: center; gap: 6px; }
-  .stream-status .dot { width: 8px; height: 8px; border-radius: 50%; background: #ff0000; animation: pulse 2s infinite; }
-  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+  .stream-card { background: #000; border-radius: 12px; overflow: hidden; margin: 16px 0; }
+  .stream-wrapper { width: 100%; aspect-ratio: 16/9; position: relative; overflow: hidden; }
+  .stream-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
 
   /* Actions */
   .actions { display: flex; gap: 10px; margin: 16px 0; justify-content: center; }
@@ -143,13 +127,7 @@
   <!-- Live Stream -->
   <div class="stream-card">
     <div class="stream-wrapper">
-      <video id="video" autoplay muted playsinline></video>
-      <div class="stream-controls">
-        <button id="btn-play" title="Play/Pause">&#9654;&#65039;</button>
-        <button id="btn-mute" title="Unmute">&#x1F507;</button>
-        <button id="btn-fullscreen" title="Fullscreen">&#x26F6;</button>
-        <div class="stream-status"><div class="dot"></div> LIVE</div>
-      </div>
+      <iframe src="/stream.html?src=puffdaddy&mode=mse" allow="autoplay" allowfullscreen></iframe>
     </div>
   </div>
 
@@ -225,56 +203,5 @@
   </div>
 </div>
 
-<script>
-  var video = document.getElementById('video');
-  var btnPlay = document.getElementById('btn-play');
-  var btnMute = document.getElementById('btn-mute');
-  var btnFs = document.getElementById('btn-fullscreen');
-  var src = '/api/stream.m3u8?src=puffdaddy';
-
-  // Controls
-  btnPlay.onclick = function() {
-    if (video.paused) { video.play(); btnPlay.textContent = '\u23F8\uFE0F'; }
-    else { video.pause(); btnPlay.textContent = '\u25B6\uFE0F'; }
-  };
-  btnMute.onclick = function() {
-    video.muted = !video.muted;
-    btnMute.textContent = video.muted ? '\u{1F507}' : '\u{1F50A}';
-  };
-  btnFs.onclick = function() {
-    var el = document.querySelector('.stream-card');
-    if (document.fullscreenElement) document.exitFullscreen();
-    else el.requestFullscreen();
-  };
-
-  // HLS Player
-  if (Hls.isSupported()) {
-    var hls = new Hls({
-      liveSyncDurationCount: 3,
-      liveMaxLatencyDurationCount: 8,
-      lowLatencyMode: false,
-      backBufferLength: 15,
-      maxBufferLength: 30,
-      maxMaxBufferLength: 60,
-    });
-    hls.loadSource(src);
-    hls.attachMedia(video);
-    hls.on(Hls.Events.MANIFEST_PARSED, function() {
-      video.play();
-      btnPlay.textContent = '\u23F8\uFE0F';
-    });
-    hls.on(Hls.Events.ERROR, function(e, data) {
-      if (data.fatal) {
-        setTimeout(function() { hls.loadSource(src); hls.startLoad(); }, 5000);
-      }
-    });
-  } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-    video.src = src;
-    video.addEventListener('loadedmetadata', function() {
-      video.play();
-      btnPlay.textContent = '\u23F8\uFE0F';
-    });
-  }
-</script>
 </body>
 </html>
