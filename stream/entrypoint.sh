@@ -9,7 +9,7 @@ streams:
     - "tuya://openapi.tuyaus.com?device_id=${TUYA_DEVICE_ID}&uid=${TUYA_UID}&client_id=${TUYA_CLIENT_ID}&client_secret=${TUYA_CLIENT_SECRET}"
 
 api:
-  listen: ":1984"
+  listen: ":3000"
   static_dir: /www
 
 ffmpeg:
