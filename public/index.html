@@ -135,12 +135,8 @@
     <div class="stream-wrapper">
       <iframe id="stream-frame" allow="autoplay" allowfullscreen></iframe>
       <script>
-        // In production, go2rtc is proxied through /stream/ on the same host
-        // Locally, connect directly to go2rtc on port 1984
-        var STREAM_HOST = window.location.hostname === 'localhost'
-          ? 'http://localhost:1984'
-          : window.location.origin + '/stream';
-        document.getElementById('stream-frame').src = STREAM_HOST + '/stream.html?src=puffdaddy&mode=webrtc';
+        // go2rtc serves both the site and stream on the same port
+        document.getElementById('stream-frame').src = '/stream.html?src=puffdaddy&mode=webrtc';
       </script>
     </div>
   </div>

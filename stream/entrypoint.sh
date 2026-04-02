@@ -10,13 +10,13 @@ streams:
 
 api:
   listen: ":1984"
+  static_dir: /www
 
 ffmpeg:
   bin: ffmpeg
 EOF
 
+echo "Config:"
+cat /config/go2rtc.yaml
 echo "Starting go2rtc..."
-go2rtc -c /config/go2rtc.yaml &
-
-echo "Starting nginx..."
-exec nginx -g "daemon off;"
+exec go2rtc -c /config/go2rtc.yaml
