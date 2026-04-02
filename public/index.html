@@ -133,8 +133,14 @@
   <!-- Live Stream -->
   <div class="stream-card">
     <div class="stream-wrapper">
-      <iframe src="https://removable-arrange-deviation-commands.trycloudflare.com/stream.html?src=puffdaddy&mode=webrtc"
-        allow="autoplay" allowfullscreen></iframe>
+      <iframe id="stream-frame" allow="autoplay" allowfullscreen></iframe>
+      <script>
+        // Configure stream URL: change this when deploying
+        var STREAM_HOST = window.location.hostname === 'localhost'
+          ? 'http://localhost:1984'
+          : 'https://stream.onlyfins.com'; // replace with your go2rtc deployment URL
+        document.getElementById('stream-frame').src = STREAM_HOST + '/stream.html?src=puffdaddy&mode=webrtc';
+      </script>
     </div>
   </div>
 
