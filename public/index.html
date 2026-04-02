@@ -211,10 +211,12 @@
   function startStream() {
     if (Hls.isSupported()) {
       var hls = new Hls({
-        liveSyncDurationCount: 3,
-        liveMaxLatencyDurationCount: 10,
+        liveSyncDurationCount: 1,
+        liveMaxLatencyDurationCount: 5,
         maxBufferLength: 30,
         maxMaxBufferLength: 60,
+        manifestLoadingMaxRetry: 10,
+        levelLoadingMaxRetry: 10,
       });
       hls.loadSource(src);
       hls.attachMedia(video);
