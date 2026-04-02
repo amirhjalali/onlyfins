@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OnlyFins — Puff Daddy Live</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #f3f3f3; color: #333; }
+
+  /* Header */
+  .header {
+    background: #fff; border-bottom: 1px solid #e0e0e0;
+    padding: 10px 20px; display: flex; align-items: center;
+    justify-content: space-between; position: sticky; top: 0; z-index: 10;
+  }
+  .logo { display: flex; align-items: center; gap: 10px; font-size: 22px; font-weight: 400; color: #333; text-transform: lowercase; letter-spacing: -0.3px; text-decoration: none; }
+  .logo-icon { width: 32px; height: 32px; background: #00AFF0; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .logo-icon svg { width: 20px; height: 20px; fill: #fff; }
+  .logo b { font-weight: 700; color: #00AFF0; }
+  .btn-subscribe { background: #00AFF0; color: #fff; border: none; padding: 9px 20px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; }
+  .btn-subscribe:hover { background: #009ad6; }
+
+  /* Banner */
+  .banner { width: 100%; height: 220px; overflow: hidden; }
+  .banner img { width: 100%; height: 100%; object-fit: cover; }
+
+  /* Profile */
+  .profile-section { max-width: 700px; margin: 0 auto; padding: 0 16px; }
+  .profile-header { display: flex; gap: 16px; margin-top: -44px; position: relative; z-index: 2; }
+  .avatar { width: 100px; height: 100px; border-radius: 50%; border: 4px solid #fff; overflow: hidden; flex-shrink: 0; background: #00AFF0; }
+  .avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .profile-info { padding-top: 50px; }
+  .profile-name { font-size: 20px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+  .verified { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; background: #00AFF0; border-radius: 50%; }
+  .verified svg { width: 10px; height: 10px; fill: #fff; }
+  .profile-handle { color: #888; font-size: 14px; margin-top: 2px; }
+  .profile-bio { margin: 12px 0; font-size: 14px; line-height: 1.6; color: #555; }
+
+  /* Stats */
+  .stats { display: flex; justify-content: space-around; margin: 16px 0; padding: 16px 0; border-top: 1px solid #e0e0e0; border-bottom: 1px solid #e0e0e0; }
+  .stat { text-align: center; }
+  .stat-num { font-size: 18px; font-weight: 700; }
+  .stat-label { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* Stream */
+  .stream-card { background: #000; border-radius: 12px; overflow: hidden; margin: 16px 0; }
+  .stream-wrapper { width: 100%; aspect-ratio: 16/9; position: relative; overflow: hidden; }
+  .stream-wrapper iframe {
+    position: absolute;
+    top: -70px; left: 0;
+    width: 100%;
+    height: calc(100% + 140px); /* extend past container to clip header + controls */
+    border: none;
+  }
+
+  /* Actions */
+  .actions { display: flex; gap: 10px; margin: 16px 0; justify-content: center; }
+  .tip-btn { background: #fff; border: 2px solid #00AFF0; color: #00AFF0; padding: 10px 24px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; }
+  .tip-btn:hover { background: #f0faff; }
+
+  /* Subscribe CTA */
+  .subscribe-banner { background: #fff; border-radius: 12px; padding: 24px; text-align: center; margin: 16px 0; border: 1px solid #e8e8e8; }
+  .subscribe-banner h3 { margin-bottom: 6px; font-size: 18px; }
+  .subscribe-banner p { color: #888; font-size: 14px; margin-bottom: 14px; }
+
+  /* Posts */
+  .post-card { background: #fff; border-radius: 12px; margin: 16px 0; overflow: hidden; border: 1px solid #e8e8e8; }
+  .post-header { display: flex; align-items: center; gap: 10px; padding: 14px 16px; }
+  .post-avatar { width: 40px; height: 40px; border-radius: 50%; overflow: hidden; flex-shrink: 0; }
+  .post-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .post-name { font-weight: 600; font-size: 14px; }
+  .post-time { color: #888; font-size: 12px; }
+  .post-body { padding: 0 16px 14px; font-size: 14px; line-height: 1.5; }
+  .post-image { width: 100%; overflow: hidden; }
+  .post-image img { width: 100%; display: block; }
+  .post-actions { display: flex; gap: 20px; padding: 12px 16px; border-top: 1px solid #f0f0f0; }
+  .post-action { color: #888; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+  .post-action:hover { color: #00AFF0; }
+
+  /* Footer */
+  .footer { text-align: center; padding: 30px 16px; color: #bbb; font-size: 12px; }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    .banner { height: 140px; }
+    .avatar { width: 80px; height: 80px; }
+    .profile-header { margin-top: -36px; }
+    .profile-info { padding-top: 40px; }
+    .stats { gap: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <a href="/" class="logo">
+    <div class="logo-icon"><svg viewBox="0 0 100 100"><circle cx="44" cy="50" r="30" fill="#fff"/><polygon points="74,38 94,24 94,76 74,62" fill="#fff"/><circle cx="36" cy="44" r="5" fill="#00AFF0"/></svg></div>
+    only<b>fins</b>
+  </a>
+  <button class="btn-subscribe" onclick="document.getElementById('subscribe-section').scrollIntoView({behavior:'smooth'})">Subscribe — FREE</button>
+</div>
+
+<div class="banner">
+  <img src="assets/banner.png" alt="Underwater">
+</div>
+
+<div class="profile-section">
+  <div class="profile-header">
+    <div class="avatar"><img src="assets/avatar.png" alt="Puff Daddy"></div>
+    <div class="profile-info">
+      <div class="profile-name">
+        Puff Daddy
+        <span class="verified"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span>
+      </div>
+      <div class="profile-handle">@puffdaddy_official</div>
+    </div>
+  </div>
+
+  <div class="profile-bio">
+    Figure 8 puffer. Brackish water bad boy. Snail crusher. No filter, no clothes, no shame. Streaming 24/7 from my tank in NYC. Give me 50 cents, I'll take you shopping. Will puff up for tips.
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-num">4.2K</div><div class="stat-label">Subscribers</div></div>
+    <div class="stat"><div class="stat-num">12.8K</div><div class="stat-label">Likes</div></div>
+    <div class="stat"><div class="stat-num">847</div><div class="stat-label">Media</div></div>
+    <div class="stat"><div class="stat-num">24/7</div><div class="stat-label">Streaming</div></div>
+  </div>
+
+  <!-- Live Stream -->
+  <div class="stream-card">
+    <div class="stream-wrapper">
+      <iframe src="https://removable-arrange-deviation-commands.trycloudflare.com/stream.html?src=puffdaddy&mode=webrtc"
+        allow="autoplay" allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="tip-btn" onclick="alert('Puff Daddy says thanks! He accepts tips in snails, bloodworms, and brine shrimp only.')">&#x1F4B0; Send Puff Daddy a Treat</button>
+  </div>
+
+  <div class="subscribe-banner" id="subscribe-section">
+    <h3>Subscribe to Puff Daddy</h3>
+    <p>It's free. He's a fish. What did you expect?</p>
+    <button class="btn-subscribe" onclick="this.textContent='&#10003; Subscribed!'; this.style.background='#28a745'">Subscribe for FREE</button>
+  </div>
+
+  <!-- Posts -->
+  <div class="post-card">
+    <div class="post-header">
+      <div class="post-avatar"><img src="assets/avatar.png" alt="PD"></div>
+      <div><div class="post-name">Puff Daddy</div><div class="post-time">2 hours ago</div></div>
+    </div>
+    <div class="post-body">Caught me looking right at the camera. Yes I see you. Yes I'm judging you. No I will not stop.</div>
+    <div class="post-image"><img src="assets/post1.png" alt="Puff Daddy portrait"></div>
+    <div class="post-actions">
+      <div class="post-action">&#10084;&#65039; 2.4K</div>
+      <div class="post-action">&#x1F4AC; 187</div>
+      <div class="post-action">&#x1F4B0; Tip</div>
+    </div>
+  </div>
+
+  <div class="post-card">
+    <div class="post-header">
+      <div class="post-avatar"><img src="assets/avatar.png" alt="PD"></div>
+      <div><div class="post-name">Puff Daddy</div><div class="post-time">Yesterday</div></div>
+    </div>
+    <div class="post-body">Someone said "he won't puff up, he's all talk." So I chose violence. Full inflation mode activated. Don't test me.</div>
+    <div class="post-image"><img src="assets/post2.png" alt="Puff Daddy puffed up"></div>
+    <div class="post-actions">
+      <div class="post-action">&#10084;&#65039; 5.8K</div>
+      <div class="post-action">&#x1F4AC; 412</div>
+      <div class="post-action">&#x1F4B0; Tip</div>
+    </div>
+  </div>
+
+  <div class="post-card">
+    <div class="post-header">
+      <div class="post-avatar"><img src="assets/avatar.png" alt="PD"></div>
+      <div><div class="post-name">Puff Daddy</div><div class="post-time">3 days ago</div></div>
+    </div>
+    <div class="post-body">Snail mukbang ASMR. The crunch is the best part. My teeth never stop growing so this is basically dental care. You're welcome.</div>
+    <div class="post-image"><img src="assets/post3.png" alt="Puff Daddy eating snail"></div>
+    <div class="post-actions">
+      <div class="post-action">&#10084;&#65039; 7.1K</div>
+      <div class="post-action">&#x1F4AC; 523</div>
+      <div class="post-action">&#x1F4B0; Tip</div>
+    </div>
+  </div>
+
+  <div class="post-card">
+    <div class="post-header">
+      <div class="post-avatar"><img src="assets/avatar.png" alt="PD"></div>
+      <div><div class="post-name">Puff Daddy</div><div class="post-time">5 days ago</div></div>
+    </div>
+    <div class="post-body">FAQ:<br>Q: Are you freshwater or saltwater?<br>A: Brackish. I'm complicated.<br>Q: Will you puff up on stream?<br>A: Only if you tip enough snails.<br>Q: Why figure 8?<br>A: Because my markings are infinity signs. I'm eternal.</div>
+    <div class="post-actions">
+      <div class="post-action">&#10084;&#65039; 3.2K</div>
+      <div class="post-action">&#x1F4AC; 298</div>
+      <div class="post-action">&#x1F4B0; Tip</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    &copy; 2026 OnlyFins. This is a parody. No fish were harmed in the making of this website.<br>
+    Puff Daddy (Dichotomyctere ocellatus) streams 24/7 from a lovingly maintained brackish aquarium.
+  </div>
+</div>
+
+</body>
+</html>
