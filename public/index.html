@@ -250,12 +250,12 @@
   // HLS Player
   if (Hls.isSupported()) {
     var hls = new Hls({
-      liveSyncDurationCount: 2,
-      liveMaxLatencyDurationCount: 4,
-      lowLatencyMode: true,
-      backBufferLength: 0,
-      maxBufferLength: 8,
-      maxMaxBufferLength: 15,
+      liveSyncDurationCount: 3,
+      liveMaxLatencyDurationCount: 8,
+      lowLatencyMode: false,
+      backBufferLength: 15,
+      maxBufferLength: 30,
+      maxMaxBufferLength: 60,
     });
     hls.loadSource(src);
     hls.attachMedia(video);
