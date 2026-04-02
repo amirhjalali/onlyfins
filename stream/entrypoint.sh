@@ -5,8 +5,10 @@ mkdir -p /config
 
 cat > /config/go2rtc.yaml << EOF
 streams:
-  puffdaddy:
+  puffdaddy_raw:
     - "tuya://openapi.tuyaus.com?device_id=${TUYA_DEVICE_ID}&uid=${TUYA_UID}&client_id=${TUYA_CLIENT_ID}&client_secret=${TUYA_CLIENT_SECRET}"
+  puffdaddy:
+    - "ffmpeg:puffdaddy_raw#video=h264#width=640#height=360#raw=-preset ultrafast -tune zerolatency"
 
 api:
   listen: ":3000"

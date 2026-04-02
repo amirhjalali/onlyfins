@@ -6,6 +6,7 @@
 <title>OnlyFins — Puff Daddy Live</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #f3f3f3; color: #333; }
@@ -47,8 +48,8 @@
 
   /* Stream */
   .stream-card { background: #000; border-radius: 12px; overflow: hidden; margin: 16px 0; }
-  .stream-wrapper { width: 100%; aspect-ratio: 16/9; position: relative; overflow: hidden; }
-  .stream-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+  .stream-wrapper { width: 100%; aspect-ratio: 16/9; position: relative; }
+  .stream-wrapper video { width: 100%; height: 100%; object-fit: cover; display: block; }
 
   /* Actions */
   .actions { display: flex; gap: 10px; margin: 16px 0; justify-content: center; }
@@ -127,7 +128,7 @@
   <!-- Live Stream -->
   <div class="stream-card">
     <div class="stream-wrapper">
-      <iframe src="/stream.html?src=puffdaddy&mode=mse" allow="autoplay" allowfullscreen></iframe>
+      <video id="video" autoplay muted playsinline></video>
     </div>
   </div>
 
@@ -203,5 +204,30 @@
   </div>
 </div>
 
+<script>
+  var video = document.getElementById('video');
+  var src = '/api/stream.m3u8?src=puffdaddy';
+
+  function startStream() {
+    if (Hls.isSupported()) {
+      var hls = new Hls({
+        liveSyncDurationCount: 3,
+        liveMaxLatencyDurationCount: 10,
+        maxBufferLength: 30,
+        maxMaxBufferLength: 60,
+      });
+      hls.loadSource(src);
+      hls.attachMedia(video);
+      hls.on(Hls.Events.MANIFEST_PARSED, function() { video.play(); });
+      hls.on(Hls.Events.ERROR, function(e, data) {
+        if (data.fatal) { setTimeout(function() { hls.destroy(); startStream(); }, 5000); }
+      });
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = src;
+      video.addEventListener('loadedmetadata', function() { video.play(); });
+    }
+  }
+  startStream();
+</script>
 </body>
 </html>
