@@ -220,11 +220,13 @@
 
     ws.onmessage = function(ev) {
       if (typeof ev.data === 'string') {
-        // First message: codec info
+        // First message: JSON with codec info
+        var msg = JSON.parse(ev.data);
+        var codec = msg.value || ev.data;
         ms = new MediaSource();
         video.src = URL.createObjectURL(ms);
         ms.addEventListener('sourceopen', function() {
-          sb = ms.addSourceBuffer(ev.data);
+          sb = ms.addSourceBuffer(codec);
           sb.mode = 'segments';
           sb.addEventListener('updateend', function() {
             if (queue.length > 0 && !sb.updating) {
