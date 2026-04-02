@@ -1,7 +1,7 @@
 FROM debian:bookworm-slim
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates curl ffmpeg \
+    ca-certificates curl ffmpeg nginx \
     && rm -rf /var/lib/apt/lists/*
 
 # Download go2rtc
@@ -11,6 +11,9 @@ RUN curl -L -o /usr/local/bin/go2rtc \
 
 # Copy static site
 COPY public/ /www/
+
+# Nginx config
+COPY nginx.conf /etc/nginx/sites-available/default
 
 COPY stream/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh

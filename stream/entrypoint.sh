@@ -9,14 +9,14 @@ streams:
     - "tuya://openapi.tuyaus.com?device_id=${TUYA_DEVICE_ID}&uid=${TUYA_UID}&client_id=${TUYA_CLIENT_ID}&client_secret=${TUYA_CLIENT_SECRET}"
 
 api:
-  listen: ":3000"
-  static_dir: /www
+  listen: ":1984"
 
 ffmpeg:
   bin: ffmpeg
 EOF
 
-echo "Config:"
-cat /config/go2rtc.yaml
 echo "Starting go2rtc..."
-exec go2rtc -c /config/go2rtc.yaml
+go2rtc -c /config/go2rtc.yaml &
+
+echo "Starting nginx..."
+exec nginx -g "daemon off;"
