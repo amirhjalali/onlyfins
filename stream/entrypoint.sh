@@ -15,7 +15,8 @@ ffmpeg:
   bin: ffmpeg
 EOF
 
-echo "Starting go2rtc with config:"
-cat /config/go2rtc.yaml
+echo "Starting go2rtc..."
+go2rtc -c /config/go2rtc.yaml &
 
-exec go2rtc -c /config/go2rtc.yaml
+echo "Starting nginx..."
+exec nginx -g "daemon off;"
