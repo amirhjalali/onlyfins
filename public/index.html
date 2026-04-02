@@ -6,7 +6,6 @@
 <title>OnlyFins — Puff Daddy Live</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
-<script type="module" src="/api/video-stream.js"></script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #f3f3f3; color: #333; }
@@ -49,8 +48,7 @@
   /* Stream */
   .stream-card { background: #000; border-radius: 12px; overflow: hidden; margin: 16px 0; }
   .stream-wrapper { width: 100%; aspect-ratio: 16/9; position: relative; }
-  .stream-wrapper video-stream { width: 100%; height: 100%; display: block; }
-  .stream-wrapper video-stream::part(video) { width: 100%; height: 100%; object-fit: cover; }
+  .stream-wrapper video { width: 100%; height: 100%; object-fit: cover; display: block; }
 
   /* Actions */
   .actions { display: flex; gap: 10px; margin: 16px 0; justify-content: center; }
@@ -129,7 +127,7 @@
   <!-- Live Stream -->
   <div class="stream-card">
     <div class="stream-wrapper">
-      <video-stream src="/api/ws?src=puffdaddy" mode="mse,hls" muted autoplay></video-stream>
+      <video id="video" autoplay muted playsinline></video>
     </div>
   </div>
 
@@ -205,5 +203,60 @@
   </div>
 </div>
 
+<script>
+(function() {
+  var video = document.getElementById('video');
+  var wsProto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+  var wsUrl = wsProto + '//' + location.host + '/api/ws?src=puffdaddy';
+
+  function startMSE() {
+    var ws = new WebSocket(wsUrl);
+    ws.binaryType = 'arraybuffer';
+    var ms, sb, queue = [];
+
+    ws.onopen = function() {
+      ws.send(JSON.stringify({type: 'mse'}));
+    };
+
+    ws.onmessage = function(ev) {
+      if (typeof ev.data === 'string') {
+        // First message: codec info
+        ms = new MediaSource();
+        video.src = URL.createObjectURL(ms);
+        ms.addEventListener('sourceopen', function() {
+          sb = ms.addSourceBuffer(ev.data);
+          sb.mode = 'segments';
+          sb.addEventListener('updateend', function() {
+            if (queue.length > 0 && !sb.updating) {
+              sb.appendBuffer(queue.shift());
+            }
+            // Keep buffer manageable: remove old data beyond 5 seconds
+            if (sb.buffered.length > 0 && sb.buffered.end(0) - sb.buffered.start(0) > 5) {
+              sb.remove(sb.buffered.start(0), sb.buffered.end(0) - 3);
+            }
+          });
+          video.play().catch(function(){});
+        });
+      } else {
+        // Binary: fMP4 fragment
+        if (sb && !sb.updating) {
+          sb.appendBuffer(ev.data);
+        } else {
+          queue.push(ev.data);
+          // Prevent queue from growing too large
+          if (queue.length > 10) queue.shift();
+        }
+      }
+    };
+
+    ws.onerror = function() { ws.close(); };
+    ws.onclose = function() {
+      setTimeout(startMSE, 3000);
+    };
+  }
+
+  startMSE();
+})();
+</script>
 </body>
 </html>
