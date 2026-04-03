@@ -49,6 +49,13 @@ class VideoStream extends VideoRTC {
 
         const info = this.querySelector('.info');
         this.insertBefore(this.video, info);
+
+        // Disable native controls — use click-to-play/pause instead
+        this.video.controls = false;
+        this.video.addEventListener('click', () => {
+            if (this.video.paused) this.video.play();
+            else this.video.pause();
+        });
     }
 
     onconnect() {

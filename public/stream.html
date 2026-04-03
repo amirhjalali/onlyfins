@@ -29,19 +29,6 @@
             object-fit: cover !important;
         }
 
-        /* Play/pause overlay icon */
-        .play-pause-overlay {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            display: flex; align-items: center; justify-content: center;
-            pointer-events: none; z-index: 10;
-        }
-        .play-pause-overlay svg {
-            width: 64px; height: 64px; fill: white;
-            opacity: 0; transition: opacity 0.15s;
-            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5));
-        }
-        .play-pause-overlay.show svg { opacity: 0.85; }
-
         .flex {
             flex-wrap: wrap;
             align-content: flex-start;
@@ -85,39 +72,6 @@
 
     document.title = streams.join('/') + ' - go2rtc';
 
-    // Disable native controls, add click-to-play/pause
-    const overlay = document.createElement('div');
-    overlay.className = 'play-pause-overlay';
-    overlay.innerHTML = `
-        <svg class="play-icon" viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
-        <svg class="pause-icon" viewBox="0 0 24 24"><rect x="5" y="3" width="4" height="18"/><rect x="15" y="3" width="4" height="18"/></svg>
-    `;
-    document.body.appendChild(overlay);
-
-    const playIcon = overlay.querySelector('.play-icon');
-    const pauseIcon = overlay.querySelector('.pause-icon');
-    let hideTimer;
-
-    function flashIcon(paused) {
-        playIcon.style.display = paused ? 'block' : 'none';
-        pauseIcon.style.display = paused ? 'none' : 'block';
-        overlay.classList.add('show');
-        clearTimeout(hideTimer);
-        hideTimer = setTimeout(() => overlay.classList.remove('show'), 600);
-    }
-
-    const obs = new MutationObserver(() => {
-        const vid = document.querySelector('video');
-        if (vid) {
-            vid.controls = false;
-            vid.addEventListener('click', () => {
-                if (vid.paused) { vid.play(); flashIcon(false); }
-                else { vid.pause(); flashIcon(true); }
-            });
-            obs.disconnect();
-        }
-    });
-    obs.observe(document.body, { childList: true, subtree: true });
 </script>
 </body>
 </html>
