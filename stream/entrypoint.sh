@@ -16,6 +16,7 @@ api:
 
 ffmpeg:
   bin: ffmpeg
+  h264: "-codec:v libx264 -preset:v ultrafast -tune:v zerolatency -g:v 30"
 EOF
 
 echo "Starting go2rtc..."
