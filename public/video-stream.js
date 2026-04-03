@@ -29,16 +29,6 @@ class VideoStream extends VideoRTC {
         video-stream {
             position: relative;
         }
-        .video-clip {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            position: relative;
-        }
-        .video-clip video {
-            transform: scale(1.04);
-            transform-origin: center;
-        }
         .info {
             display: none;
         }
@@ -88,10 +78,7 @@ class VideoStream extends VideoRTC {
         `;
 
         const info = this.querySelector('.info');
-        const clip = document.createElement('div');
-        clip.className = 'video-clip';
-        clip.appendChild(this.video);
-        this.insertBefore(clip, info);
+        this.insertBefore(this.video, info);
 
         // Disable native controls
         this.video.controls = false;
