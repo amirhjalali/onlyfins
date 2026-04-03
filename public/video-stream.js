@@ -55,7 +55,8 @@ class VideoStream extends VideoRTC {
             z-index: 5;
         }
         video-stream:hover .controls-overlay,
-        video-stream.show-controls .controls-overlay { opacity: 1; }
+        video-stream.show-controls .controls-overlay,
+        video-stream.paused .controls-overlay { opacity: 1; }
         .ctrl-btn {
             width: 36px; height: 36px;
             background: rgba(255,255,255,0.15);
@@ -102,6 +103,7 @@ class VideoStream extends VideoRTC {
         const updateBtns = () => {
             playBtn.classList.toggle('hidden', !this.video.paused);
             pauseBtn.classList.toggle('hidden', this.video.paused);
+            this.classList.toggle('paused', this.video.paused);
         };
 
         // Mobile: tap video to show/hide controls
