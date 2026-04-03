@@ -28,6 +28,8 @@ class VideoStream extends VideoRTC {
         <style>
         video-stream {
             position: relative;
+            overflow: hidden;
+            display: block;
         }
         .info {
             display: none;

@@ -24,6 +24,10 @@
 
         video-stream video {
             object-fit: cover !important;
+            /* Crop HEVC green padding: size video 2% larger and offset to hide edges */
+            width: 102% !important;
+            height: 102% !important;
+            margin: -1% !important;
         }
 
         .flex {
@@ -34,7 +38,7 @@
     </style>
 </head>
 <body>
-<script type="module" src="./video-stream.js?v=8"></script>
+<script type="module" src="./video-stream.js?v=9"></script>
 <script type="module">
     const params = new URLSearchParams(location.search);
 
