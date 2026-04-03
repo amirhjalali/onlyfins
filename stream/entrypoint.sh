@@ -8,7 +8,7 @@ streams:
   puffdaddy_raw:
     - "tuya://openapi.tuyaus.com?device_id=${TUYA_DEVICE_ID}&uid=${TUYA_UID}&client_id=${TUYA_CLIENT_ID}&client_secret=${TUYA_CLIENT_SECRET}"
   puffdaddy:
-    - "ffmpeg:puffdaddy_raw#video=copy#raw=-bsf:v hevc_metadata=crop_bottom=16:width=2304:height=1296"
+    - "ffmpeg:puffdaddy_raw#video=copy#raw=-bsf:v hevc_metadata=crop_bottom=16"
 
 api:
   listen: ":3000"
