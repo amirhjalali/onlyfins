@@ -117,16 +117,11 @@ class VideoStream extends VideoRTC {
             this.classList.toggle('paused', this.video.paused);
         };
 
-        // Auto-pause once video starts receiving data (show play button first)
-        this.video.addEventListener('playing', () => {
-            if (!started) this.video.pause();
-        }, { once: false });
-
+        // Video autoplays muted behind the overlay — just hide overlay on click
         const startPlayback = () => {
             if (started) return;
             started = true;
             bigPlay.classList.add('hidden');
-            this.video.play();
         };
 
         bigPlay.addEventListener('click', startPlayback);
