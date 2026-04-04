@@ -150,15 +150,23 @@ class VideoStream extends VideoRTC {
             if (started && !this._userPaused) setTimeout(() => this.video.play(), 500);
         });
 
-        // Watchdog: detect frozen video (WebRTC drops don't fire stalled/pause)
+        // Watchdog: detect frozen video and fully reconnect the stream
         let lastTime = 0;
+        let freezeCount = 0;
         setInterval(() => {
             if (!started || this._userPaused) return;
             const t = this.video.currentTime;
             if (t === lastTime && !this.video.paused) {
-                // Video frozen — reload the stream
-                this.video.pause();
-                this.video.play().catch(() => {});
+                freezeCount++;
+                if (freezeCount >= 2) {
+                    // Frozen for 10s+ — reconnect the stream
+                    freezeCount = 0;
+                    console.warn('Stream frozen, reconnecting...');
+                    this.ondisconnect();
+                    setTimeout(() => this.onconnect(), 1000);
+                }
+            } else {
+                freezeCount = 0;
             }
             lastTime = t;
         }, 5000);
