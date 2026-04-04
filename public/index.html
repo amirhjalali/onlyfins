@@ -134,11 +134,9 @@
         const isLG = /WebOS|webOS|LG/.test(ua);
         const iframe = document.getElementById('stream-iframe');
         if (isLG) {
-          iframe.src = '/stream.html?src=puffdaddy_tv&mode=mp4,hls';
-        } else if (isIOS) {
-          iframe.src = '/stream.html?src=puffdaddy&mode=mse,mp4,hls';
+          iframe.src = '/stream.html?src=puffdaddy&mode=mp4,hls';
         } else {
-          iframe.src = '/stream.html?src=puffdaddy_raw&mode=mse,webrtc,mp4,hls';
+          iframe.src = '/stream.html?src=puffdaddy&mode=mse,mp4,hls';
         }
       </script>
     </div>
