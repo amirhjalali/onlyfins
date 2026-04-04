@@ -144,6 +144,18 @@ class VideoStream extends VideoRTC {
         playBtn.addEventListener('click', () => { this.video.play(); updateBtns(); });
         pauseBtn.addEventListener('click', () => { this.video.pause(); updateBtns(); });
 
+        // Auto-resume on stall (Tuya session cycling causes brief drops)
+        this.video.addEventListener('stalled', () => {
+            if (started) setTimeout(() => { if (this.video.paused) this.video.play(); }, 1000);
+        });
+        this.video.addEventListener('pause', () => {
+            if (started && !this._userPaused) setTimeout(() => this.video.play(), 500);
+        });
+
+        // Track user-initiated pauses
+        pauseBtn.addEventListener('mousedown', () => { this._userPaused = true; });
+        playBtn.addEventListener('click', () => { this._userPaused = false; });
+
         // Fullscreen
         this.querySelector('.fullscreen-btn').addEventListener('click', () => {
             const el = this.video;
