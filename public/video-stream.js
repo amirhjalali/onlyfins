@@ -152,6 +152,19 @@ class VideoStream extends VideoRTC {
             if (started && !this._userPaused) setTimeout(() => this.video.play(), 500);
         });
 
+        // Watchdog: detect frozen video (WebRTC drops don't fire stalled/pause)
+        let lastTime = 0;
+        setInterval(() => {
+            if (!started || this._userPaused) return;
+            const t = this.video.currentTime;
+            if (t === lastTime && !this.video.paused) {
+                // Video frozen — reload the stream
+                this.video.pause();
+                this.video.play().catch(() => {});
+            }
+            lastTime = t;
+        }, 5000);
+
         // Track user-initiated pauses
         pauseBtn.addEventListener('mousedown', () => { this._userPaused = true; });
         playBtn.addEventListener('click', () => { this._userPaused = false; });
