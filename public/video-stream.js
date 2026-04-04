@@ -60,10 +60,29 @@ class VideoStream extends VideoRTC {
         .ctrl-btn:hover { background: rgba(255,255,255,0.3); }
         .ctrl-btn svg { width: 18px; height: 18px; fill: white; }
         .ctrl-btn.hidden { display: none; }
+        .big-play {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(0,0,0,0.35);
+            z-index: 10;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+        .big-play.hidden { display: none; }
+        .big-play svg {
+            width: 64px; height: 64px; fill: white;
+            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.4));
+            opacity: 0.9;
+        }
+        .big-play:hover svg { opacity: 1; }
         </style>
         <div class="info">
             <div class="status"></div>
             <div class="mode"></div>
+        </div>
+        <div class="big-play">
+            <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
         </div>
         <div class="controls-overlay">
             <button class="ctrl-btn play-btn hidden" title="Play">
@@ -82,12 +101,16 @@ class VideoStream extends VideoRTC {
         const info = this.querySelector('.info');
         this.insertBefore(this.video, info);
 
-        // Disable native controls
+        // Disable native controls, don't autoplay
         this.video.controls = false;
+        this.video.autoplay = false;
+        this.video.muted = true;
 
         const playBtn = this.querySelector('.play-btn');
         const pauseBtn = this.querySelector('.pause-btn');
+        const bigPlay = this.querySelector('.big-play');
         let hideTimer;
+        let started = false;
 
         const updateBtns = () => {
             playBtn.classList.toggle('hidden', !this.video.paused);
@@ -95,8 +118,19 @@ class VideoStream extends VideoRTC {
             this.classList.toggle('paused', this.video.paused);
         };
 
+        const startPlayback = () => {
+            if (started) return;
+            started = true;
+            this._userStarted = true;
+            bigPlay.classList.add('hidden');
+            this.play();
+        };
+
+        bigPlay.addEventListener('click', startPlayback);
+
         // Mobile: tap video to show/hide controls
         this.video.addEventListener('click', () => {
+            if (!started) { startPlayback(); return; }
             if (this.classList.contains('show-controls')) {
                 this.classList.remove('show-controls');
             } else {
@@ -116,6 +150,17 @@ class VideoStream extends VideoRTC {
             if (el.requestFullscreen) el.requestFullscreen();
             else if (el.webkitEnterFullscreen) el.webkitEnterFullscreen();
         });
+    }
+
+    /**
+     * Override play to prevent autoplay — stream buffers but doesn't play
+     * until user taps the play button.
+     */
+    play() {
+        if (this._userStarted) {
+            super.play();
+        }
+        // Otherwise suppress — stream still connects and buffers
     }
 
     onconnect() {
