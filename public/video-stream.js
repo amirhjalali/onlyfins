@@ -150,7 +150,7 @@ class VideoStream extends VideoRTC {
             if (started && !this._userPaused) setTimeout(() => this.video.play(), 500);
         });
 
-        // Watchdog: detect frozen video and fully reconnect the stream
+        // Watchdog: detect frozen video and reload the page to recover
         let lastTime = 0;
         let freezeCount = 0;
         setInterval(() => {
@@ -159,11 +159,9 @@ class VideoStream extends VideoRTC {
             if (t === lastTime && !this.video.paused) {
                 freezeCount++;
                 if (freezeCount >= 2) {
-                    // Frozen for 10s+ — reconnect the stream
+                    // Frozen for 10s+ — full page reload to recover
                     freezeCount = 0;
-                    console.warn('Stream frozen, reconnecting...');
-                    this.ondisconnect();
-                    setTimeout(() => this.onconnect(), 1000);
+                    location.reload();
                 }
             } else {
                 freezeCount = 0;
