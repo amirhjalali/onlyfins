@@ -101,9 +101,8 @@ class VideoStream extends VideoRTC {
         const info = this.querySelector('.info');
         this.insertBefore(this.video, info);
 
-        // Disable native controls, don't autoplay
+        // Disable native controls, mute for autoplay policy
         this.video.controls = false;
-        this.video.autoplay = false;
         this.video.muted = true;
 
         const playBtn = this.querySelector('.play-btn');
@@ -118,12 +117,16 @@ class VideoStream extends VideoRTC {
             this.classList.toggle('paused', this.video.paused);
         };
 
+        // Auto-pause once video starts receiving data (show play button first)
+        this.video.addEventListener('playing', () => {
+            if (!started) this.video.pause();
+        }, { once: false });
+
         const startPlayback = () => {
             if (started) return;
             started = true;
-            this._userStarted = true;
             bigPlay.classList.add('hidden');
-            this.play();
+            this.video.play();
         };
 
         bigPlay.addEventListener('click', startPlayback);
@@ -175,17 +178,6 @@ class VideoStream extends VideoRTC {
             if (el.requestFullscreen) el.requestFullscreen();
             else if (el.webkitEnterFullscreen) el.webkitEnterFullscreen();
         });
-    }
-
-    /**
-     * Override play to prevent autoplay — stream buffers but doesn't play
-     * until user taps the play button.
-     */
-    play() {
-        if (this._userStarted) {
-            super.play();
-        }
-        // Otherwise suppress — stream still connects and buffers
     }
 
     onconnect() {
