@@ -150,7 +150,7 @@ class VideoStream extends VideoRTC {
             if (started && !this._userPaused) setTimeout(() => this.video.play(), 500);
         });
 
-        // Watchdog: detect frozen video and reload the page to recover
+        // Watchdog: detect frozen video and silently reload stream
         let lastTime = 0;
         let freezeCount = 0;
         setInterval(() => {
@@ -159,15 +159,15 @@ class VideoStream extends VideoRTC {
             if (t === lastTime && !this.video.paused) {
                 freezeCount++;
                 if (freezeCount >= 2) {
-                    // Frozen for 10s+ — full page reload to recover
                     freezeCount = 0;
-                    location.reload();
+                    // Silent reload — reconnects without page flash
+                    location.replace(location.href);
                 }
             } else {
                 freezeCount = 0;
             }
             lastTime = t;
-        }, 5000);
+        }, 3000);
 
         // Track user-initiated pauses
         pauseBtn.addEventListener('mousedown', () => { this._userPaused = true; });
