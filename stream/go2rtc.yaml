@@ -1,6 +1,12 @@
+# NOTE: this file is NOT used at runtime — the container regenerates the
+# config from stream/entrypoint.sh. Kept in sync only for reference.
 streams:
-  puffdaddy:
+  puffdaddy_raw:
     - "tuya://openapi.tuyaus.com?device_id=${TUYA_DEVICE_ID}&uid=${TUYA_UID}&client_id=${TUYA_CLIENT_ID}&client_secret=${TUYA_CLIENT_SECRET}"
+  # video=copy remux fixes the 2560x1440-vs-2304x1296 container mismatch
+  # that paints the green band on iOS. Zero CPU, no quality loss.
+  puffdaddy:
+    - "ffmpeg:puffdaddy_raw#video=copy"
 
 api:
   listen: ":1984"
